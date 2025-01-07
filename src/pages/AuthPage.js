@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import kite from "../assets/kiteLogo.png";
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,15 @@ const AuthPage = () => {
 
   const API_URL = "http://localhost:4000/api/v1";
 
+  // Check if the user is already logged in when the component mounts
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      // Token exists, redirect to dashboard
+      navigate("/dashboard");
+    }
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -27,7 +36,6 @@ const AuthPage = () => {
         alert("Login successful!");
         // Redirect to dashboard
         navigate('/dashboard');
-        //window.location.href = "/dashboard";
       } else {
         setError(response.data.message || "Login failed");
       }
@@ -67,17 +75,13 @@ const AuthPage = () => {
       <div className="flex justify-between mb-6">
         <button
           onClick={() => setIsLogin(true)}
-          className={`px-6 py-2 text-center ${
-            isLogin ? "bg-loginOrange text-white" : "bg-gray-200 text-gray-700"
-          } rounded-l-lg font-medium`}
+          className={`px-6 py-2 text-center ${isLogin ? "bg-loginOrange text-white" : "bg-gray-200 text-gray-700"} rounded-l-lg font-medium`}
         >
           Login
         </button>
         <button
           onClick={() => setIsLogin(false)}
-          className={`px-6 py-2 text-center ${
-            !isLogin ? "bg-loginOrange text-white" : "bg-gray-200 text-gray-700"
-          } rounded-r-lg font-medium`}
+          className={`px-6 py-2 text-center ${!isLogin ? "bg-loginOrange text-white" : "bg-gray-200 text-gray-700"} rounded-r-lg font-medium`}
         >
           Sign Up
         </button>

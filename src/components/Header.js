@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Kite from '../assets/kiteLogo.png';
 
 const Header = () => {
+    const navigate = useNavigate();
     const [nifty, setNifty] = useState(null);
     const [sensex, setSensex] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -73,11 +74,27 @@ const Header = () => {
         loadData();
     }, [loadData]);
 
-    // Helper function to determine color based on change
+   
     const getChangeColor = (change) => {
-        if (change > 0) return 'text-green-500'; // Green for positive change
-        if (change < 0) return 'text-red-500';  // Red for negative change
-        return 'text-gray-700'; // Default gray if no change
+        if (change > 0) return 'text-green-500'; 
+        if (change < 0) return 'text-red-500';  
+        return 'text-gray-700'; 
+    };
+
+    // Handle logout
+    const handleLogout = () => {
+        // Clear localStorage and reset state
+        localStorage.removeItem('token');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('marketData');
+        localStorage.removeItem('stockData');
+        localStorage.removeItem('lastFetchDate');
+        setNifty(null);
+        setSensex(null);
+        setLoading(true);  // Optionally reset loading state
+
+        // Redirect to home page
+        navigate('/');
     };
 
     return (
@@ -148,6 +165,14 @@ const Header = () => {
                         Funds
                     </Link>
                 </div>
+
+                {/* Logout Button */}
+                <button
+                    onClick={handleLogout}
+                    className="bg-loginOrange text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
+                >
+                    Logout
+                </button>
             </nav>
         </div>
     );
